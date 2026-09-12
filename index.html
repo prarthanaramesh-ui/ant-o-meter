@@ -1,0 +1,2536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🐜 ANT-O-METER</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:Arial,sans-serif;
+background:#101827;
+color:white;
+overflow-x:hidden;
+}
+
+button{
+border:0;
+cursor:pointer;
+font-weight:bold;
+}
+
+.hidden{display:none!important}
+
+
+
+/* =====================================================
+   STORY
+===================================================== */
+
+#storyScreen{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:25px;
+background:
+radial-gradient(circle at 20% 20%,#507d43,#14251a 65%);
+}
+
+.storyBox{
+width:1050px;
+max-width:96%;
+background:rgba(10,20,15,.95);
+border:3px solid #8bc34a;
+border-radius:25px;
+padding:22px;
+box-shadow:0 0 45px rgba(139,195,74,.35);
+}
+
+.storyHeader{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+}
+
+.storyTitle{
+font-size:42px;
+color:#b5ff6a;
+text-shadow:0 0 15px #7cff32;
+}
+
+.musicButton{
+background:#334155;
+color:white;
+padding:9px 15px;
+border-radius:10px;
+}
+
+.chapter{
+color:#a3e635;
+font-size:14px;
+margin-bottom:8px;
+}
+
+.storyScene{
+height:430px;
+position:relative;
+overflow:hidden;
+border-radius:18px;
+border:2px solid #46683b;
+background:#78ae5c;
+}
+
+/* ground */
+
+.storyGround{
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+height:28%;
+background:
+radial-gradient(circle,#8b633c 2px,transparent 3px),
+#69482d;
+}
+
+/* hills */
+
+.storyHill{
+position:absolute;
+bottom:70px;
+width:180px;
+height:130px;
+background:#56351f;
+border-radius:90% 90% 10% 10%;
+}
+
+.storyHill:after{
+content:"";
+position:absolute;
+width:75px;
+height:38px;
+left:53px;
+top:48px;
+background:#24150d;
+border-radius:50%;
+}
+
+.sh1{left:35px}
+.sh2{right:40px;transform:scale(.75)}
+
+/* clouds */
+
+.cloud{
+position:absolute;
+font-size:55px;
+opacity:.8;
+animation:cloudMove 16s linear infinite;
+}
+
+.c1{top:35px;left:-100px}
+.c2{top:90px;left:-300px;animation-delay:5s}
+
+@keyframes cloudMove{
+from{transform:translateX(0)}
+to{transform:translateX(1200px)}
+}
+
+
+
+/* STORY ANTS */
+
+.storyAnt{
+position:absolute;
+font-size:34px;
+bottom:105px;
+left:-70px;
+animation:antTravel 7s linear infinite;
+z-index:5;
+}
+
+.sa2{animation-delay:1s}
+.sa3{animation-delay:2s}
+.sa4{animation-delay:3s}
+.sa5{animation-delay:4s}
+
+@keyframes antTravel{
+from{left:-80px}
+to{left:110%}
+}
+
+/* security */
+
+.securityWall{
+position:absolute;
+right:38%;
+top:0;
+width:9px;
+height:100%;
+background:#ff3434;
+box-shadow:0 0 20px red;
+z-index:10;
+}
+
+.securityAntStory{
+position:absolute;
+right:37%;
+bottom:115px;
+font-size:42px;
+z-index:12;
+animation:guardBob 1s infinite alternate;
+}
+
+@keyframes guardBob{
+from{transform:translateY(-5px)}
+to{transform:translateY(5px)}
+}
+
+/* scanner */
+
+.storyScanner{
+position:absolute;
+right:38%;
+top:80px;
+width:100px;
+height:100px;
+border:5px solid #39d5ff;
+border-radius:15px;
+box-shadow:0 0 25px #39d5ff;
+display:none;
+z-index:20;
+}
+
+.scannerBeam{
+position:absolute;
+left:5px;
+right:5px;
+height:5px;
+background:#39d5ff;
+box-shadow:0 0 15px #39d5ff;
+animation:scanBeam 1s infinite;
+}
+
+@keyframes scanBeam{
+from{top:5px}
+to{top:85px}
+}
+
+/* ID card */
+
+.idCard{
+position:absolute;
+left:30px;
+top:45px;
+width:240px;
+padding:18px;
+border-radius:15px;
+background:#eef7e8;
+color:#17251a;
+display:none;
+z-index:30;
+box-shadow:0 10px 25px #0006;
+}
+
+.idCard h3{
+color:#2e6b26;
+margin-bottom:8px;
+}
+
+/* sugar meter */
+
+.sugarMeter{
+position:absolute;
+left:35px;
+bottom:80px;
+width:260px;
+background:#111827e8;
+padding:18px;
+border-radius:15px;
+display:none;
+z-index:30;
+}
+
+.meterBar{
+height:22px;
+background:#334155;
+border-radius:20px;
+overflow:hidden;
+margin:10px 0;
+}
+
+.meterFill{
+height:100%;
+width:0%;
+background:#facc15;
+transition:width 1.5s;
+}
+
+.meterText{
+font-size:18px;
+}
+
+/* boom */
+
+.storyBoom{
+position:absolute;
+font-size:80px;
+right:36%;
+top:45%;
+opacity:0;
+z-index:50;
+pointer-events:none;
+}
+
+.storyBoom.active{
+animation:boomAnimation .9s ease-out;
+}
+
+@keyframes boomAnimation{
+0%{opacity:0;transform:scale(.2)}
+20%{opacity:1;transform:scale(1.5)}
+45%{opacity:1;transform:scale(1)}
+100%{opacity:0;transform:scale(1.8)}
+}
+
+/* resort story */
+
+.storyResort{
+position:absolute;
+right:25px;
+bottom:60px;
+width:340px;
+height:240px;
+display:none;
+}
+
+.resortHotel{
+position:absolute;
+right:60px;
+bottom:55px;
+width:190px;
+height:125px;
+background:#fff0c2;
+border:5px solid #78431f;
+border-radius:10px;
+}
+
+.resortRoof{
+position:absolute;
+top:-50px;
+left:-20px;
+width:220px;
+height:60px;
+background:#c56b38;
+clip-path:polygon(50% 0,100% 100%,0 100%);
+}
+
+.resortPool{
+position:absolute;
+bottom:0;
+left:0;
+width:170px;
+height:60px;
+background:#32bce8;
+border:5px solid white;
+border-radius:50%;
+}
+
+.storyPalm{
+position:absolute;
+font-size:60px;
+left:15px;
+bottom:60px;
+}
+
+.storyTourist{
+position:absolute;
+font-size:32px;
+bottom:15px;
+animation:tourist 2s infinite alternate;
+}
+
+.t1{left:25px}
+.t2{left:180px;animation-delay:.5s}
+.t3{left:270px;animation-delay:1s}
+
+@keyframes tourist{
+from{transform:translateX(-5px)}
+to{transform:translateX(10px)}
+}
+
+/* story text */
+
+.storyText{
+font-size:20px;
+line-height:1.5;
+min-height:90px;
+padding:15px 5px;
+text-align:center;
+}
+
+.nextBtn{
+background:#8bc34a;
+color:#142008;
+padding:13px 32px;
+border-radius:11px;
+font-size:18px;
+display:block;
+margin:auto;
+}
+
+
+/* =====================================================
+   MAIN APP
+===================================================== */
+
+#app{
+display:none;
+flex-direction:column;
+height:100vh;
+overflow:hidden;
+}
+
+header{
+padding:10px 25px;
+background:#172235;
+border-bottom:2px solid #334155;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-shrink:0;
+}
+
+.logo{
+font-size:28px;
+font-weight:bold;
+color:#a8ff58;
+}
+
+.subtitle{
+font-size:12px;
+color:#94a3b8;
+}
+
+.modeBtn{
+background:#334155;
+color:white;
+padding:9px 15px;
+border-radius:9px;
+}
+
+/* dashboard */
+
+.dashboard{
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:8px;
+padding:8px 14px;
+flex-shrink:0;
+}
+
+.card{
+background:#1c293c;
+border:1px solid #334155;
+border-radius:10px;
+padding:8px 10px;
+text-align:center;
+}
+
+.card h3{
+font-size:11px;
+color:#94a3b8;
+}
+
+.card p{
+font-size:22px;
+font-weight:bold;
+margin-top:3px;
+}
+
+/* controls */
+
+.controls{
+display:flex;
+align-items:center;
+gap:10px;
+padding:4px 15px 6px;
+flex-wrap:wrap;
+flex-shrink:0;
+}
+
+.controlBtn{
+padding:10px 18px;
+border-radius:9px;
+}
+
+.start{background:#22c55e}
+.stop{background:#f59e0b}
+.restart{background:#ef4444;color:white}
+
+.speedBox{
+margin-left:auto;
+}
+
+
+/* =====================================================
+   SIMULATION
+===================================================== */
+
+.simulation{
+flex:1;
+margin:6px 10px 10px;
+border:3px solid #3e6234;
+border-radius:20px;
+position:relative;
+overflow:hidden;
+min-height:0;
+
+background:
+radial-gradient(circle at 20% 30%,rgba(255,255,255,.12) 2px,transparent 3px),
+radial-gradient(circle at 70% 70%,rgba(255,255,255,.08) 2px,transparent 3px),
+linear-gradient(
+#7eb964 0 57%,
+#765034 57% 100%
+);
+}
+
+/* natural environment */
+
+.grass{
+position:absolute;
+width:3px;
+height:18px;
+background:#315c28;
+transform:rotate(20deg);
+opacity:.8;
+}
+
+.leaf{
+position:absolute;
+width:22px;
+height:11px;
+background:#315f28;
+border-radius:100% 0 100% 0;
+}
+
+.crumb{
+position:absolute;
+width:7px;
+height:7px;
+background:#d5b47c;
+border-radius:50%;
+}
+
+.stone{
+position:absolute;
+width:22px;
+height:13px;
+background:#7e7669;
+border-radius:50%;
+}
+
+.twig{
+position:absolute;
+width:55px;
+height:5px;
+background:#4c321d;
+border-radius:5px;
+transform:rotate(25deg);
+}
+
+/* hills */
+
+.antHill{
+position:absolute;
+bottom:40px;
+width:170px;
+height:120px;
+background:#57351f;
+border-radius:80% 80% 10% 10%;
+z-index:2;
+}
+
+.antHill:before{
+content:"";
+position:absolute;
+left:52px;
+top:45px;
+width:65px;
+height:35px;
+background:#21140d;
+border-radius:50%;
+}
+
+.hillA{left:25px}
+.hillB{left:230px;transform:scale(.7)}
+.hillC{left:380px;transform:scale(.55)}
+
+/* detection */
+
+.detectionLine{
+position:absolute;
+left:55%;
+top:0;
+width:7px;
+height:100%;
+background:#ff3d3d;
+box-shadow:0 0 20px #ff2222;
+z-index:10;
+}
+
+.lineLabel{
+position:absolute;
+top:15px;
+left:calc(55% - 85px);
+background:#b91c1c;
+padding:8px 12px;
+border-radius:8px;
+z-index:30;
+font-weight:bold;
+}
+
+.sugarRule{
+position:absolute;
+top:57px;
+left:calc(55% - 110px);
+background:#111827dd;
+padding:8px;
+border-radius:8px;
+font-size:11px;
+z-index:30;
+}
+
+/* security */
+
+.securityGuard{
+position:absolute;
+left:calc(55% - 28px);
+font-size:30px;
+z-index:20;
+animation:guardBob 1.5s infinite alternate;
+}
+
+.guard1{top:35%}
+.guard2{top:55%}
+.guard3{top:75%}
+
+
+/* =====================================================
+   ANT
+===================================================== */
+
+.ant{
+position:absolute;
+width:48px;
+height:45px;
+z-index:15;
+}
+
+.antHead{
+position:absolute;
+right:0;
+top:12px;
+width:17px;
+height:17px;
+background:#18100c;
+border-radius:50%;
+}
+
+.antBody{
+position:absolute;
+right:13px;
+top:9px;
+width:19px;
+height:25px;
+background:#21140e;
+border-radius:50%;
+}
+
+.antAbdomen{
+position:absolute;
+left:0;
+top:8px;
+width:23px;
+height:27px;
+background:#2e1b12;
+border-radius:50%;
+}
+
+.eye{
+position:absolute;
+right:3px;
+top:4px;
+width:4px;
+height:4px;
+background:white;
+border-radius:50%;
+}
+
+.antenna{
+position:absolute;
+right:0;
+top:10px;
+width:16px;
+height:2px;
+background:#1b120e;
+transform-origin:left;
+}
+
+.a1{transform:rotate(-25deg)}
+.a2{top:18px;transform:rotate(25deg)}
+
+.leg{
+position:absolute;
+left:12px;
+width:17px;
+height:3px;
+background:#1b120e;
+transform-origin:left;
+}
+
+.l1{top:10px;transform:rotate(-35deg)}
+.l2{top:20px;transform:rotate(-10deg)}
+.l3{top:30px;transform:rotate(30deg)}
+.r1{top:10px;transform:rotate(35deg)}
+.r2{top:20px;transform:rotate(10deg)}
+.r3{top:30px;transform:rotate(-30deg)}
+
+.crawling .leg{
+animation:legWalk .22s infinite alternate;
+}
+
+.crawling .l2,
+.crawling .r2,
+.crawling .l3{
+animation-delay:.11s;
+}
+
+@keyframes legWalk{
+from{transform:rotate(35deg)}
+to{transform:rotate(55deg)}
+}
+
+.suitcase{
+position:absolute;
+left:-10px;
+top:15px;
+font-size:15px;
+}
+
+
+
+
+
+
+
+/* =====================================================
+   RESORT
+===================================================== */
+
+.destination{
+position:absolute;
+right:0;
+top:0;
+width:29%;
+height:100%;
+overflow:hidden;
+border-left:4px solid #35592d;
+
+background:
+linear-gradient(
+#79bedf 0 44%,
+#e6cb83 44% 73%,
+#69a34b 73%
+);
+}
+
+.resortSign{
+position:absolute;
+top:15px;
+right:12px;
+background:#fff0b7;
+color:#5b3517;
+padding:8px 12px;
+border-radius:9px;
+font-weight:bold;
+z-index:10;
+}
+
+.resortBuilding{
+position:absolute;
+top:80px;
+right:35px;
+width:155px;
+height:110px;
+background:#fff1c9;
+border:4px solid #744421;
+border-radius:8px;
+}
+
+.resortBuilding:before{
+content:"🏨";
+position:absolute;
+font-size:45px;
+left:50px;
+top:30px;
+}
+
+.resortRoof{
+position:absolute;
+top:-35px;
+left:-10px;
+width:165px;
+height:40px;
+background:#c96e39;
+clip-path:polygon(50% 0,100% 100%,0 100%);
+}
+
+.pool{
+position:absolute;
+right:20px;
+bottom:135px;
+width:135px;
+height:55px;
+background:#42bee9;
+border:5px solid white;
+border-radius:50%;
+}
+
+.pool:after{
+content:"🏊";
+position:absolute;
+left:42px;
+top:4px;
+font-size:25px;
+}
+
+.palm{
+position:absolute;
+font-size:50px;
+}
+
+.palm1{left:5px;top:100px}
+.palm2{right:5px;bottom:105px}
+
+.umbrella{
+position:absolute;
+left:35px;
+bottom:65px;
+font-size:45px;
+}
+
+.resortAnt{
+position:absolute;
+bottom:30px;
+font-size:28px;
+animation:tourist 2s infinite alternate;
+}
+
+.ra1{left:25px}
+.ra2{left:105px;animation-delay:.4s}
+.ra3{left:180px;animation-delay:.8s}
+
+/* data panel */
+
+.dataPanel{
+position:absolute;
+top:100px;
+left:20px;
+width:235px;
+background:#111827ed;
+border:1px solid #475569;
+padding:15px;
+border-radius:12px;
+z-index:60;
+display:none;
+}
+
+.dataPanel h3{
+color:#a8ff58;
+margin-bottom:8px;
+}
+
+.dataPanel div{
+font-size:13px;
+margin:5px 0;
+}
+
+/* boom */
+
+.boomEffect{
+position:absolute;
+font-size:70px;
+z-index:100;
+opacity:0;
+pointer-events:none;
+}
+
+.boomEffect.active{
+animation:boom .8s ease-out;
+}
+
+@keyframes boom{
+0%{opacity:0;transform:scale(.2)}
+20%{opacity:1;transform:scale(1.5)}
+50%{opacity:1;transform:scale(1)}
+100%{opacity:0;transform:scale(1.8)}
+}
+
+.screenShake{
+animation:shake .3s;
+}
+
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-6px)}
+50%{transform:translateX(6px)}
+75%{transform:translateX(-4px)}
+100%{transform:translateX(0)}
+}
+
+/* log */
+
+.sidePanel{
+position:absolute;
+left:15px;
+bottom:15px;
+width:270px;
+max-height:170px;
+overflow:auto;
+background:#111827df;
+padding:12px;
+border-radius:12px;
+z-index:50;
+}
+
+.sidePanel h3{
+color:#a8ff58;
+margin-bottom:8px;
+}
+
+.log{
+font-size:11px;
+padding:4px 0;
+border-bottom:1px solid #334155;
+}
+
+/* success */
+
+.success{
+display:none;
+position:fixed;
+inset:0;
+background:#000b;
+z-index:999;
+align-items:center;
+justify-content:center;
+}
+
+.successBox{
+background:#172235;
+padding:40px;
+border-radius:20px;
+text-align:center;
+border:3px solid #8bc34a;
+}
+
+.successBox h1{
+font-size:38px;
+color:#a8ff58;
+margin-bottom:15px;
+}
+
+/* mobile */
+
+@media(max-width:900px){
+
+.dashboard{
+grid-template-columns:repeat(3,1fr);
+}
+
+.destination{
+width:32%;
+}
+
+.storyScene{
+height:350px;
+}
+
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     STORY SCREEN
+===================================================== -->
+
+<section id="storyScreen">
+
+<div class="storyBox">
+
+<div class="storyHeader">
+
+<div class="storyTitle">🐜 STORY TIME</div>
+
+<button class="musicButton" onclick="toggleMusic()" id="musicButton">
+🎵 MUSIC ON
+</button>
+
+</div>
+
+<div class="chapter" id="chapter">
+CHAPTER 1 / 7
+</div>
+
+
+<div class="storyScene" id="storyScene">
+
+<!-- clouds -->
+
+<div class="cloud c1">☁️</div>
+<div class="cloud c2">☁️</div>
+
+<!-- hills -->
+
+<div class="storyHill sh1"></div>
+<div class="storyHill sh2"></div>
+
+<div class="storyGround"></div>
+
+<!-- travelling ants -->
+
+<div class="storyAnt sa1">🐜🧳</div>
+<div class="storyAnt sa2">🐜🎒</div>
+<div class="storyAnt sa3">🐜🧳</div>
+<div class="storyAnt sa4">🐜📦</div>
+<div class="storyAnt sa5">🐜🎒</div>
+
+
+<!-- security -->
+
+<div class="securityWall"></div>
+
+<div class="securityAntStory">
+🐜🛡️
+</div>
+
+
+<!-- scanner -->
+
+<div class="storyScanner" id="storyScanner">
+
+<div class="scannerBeam"></div>
+
+</div>
+
+
+<!-- ID CARD -->
+
+<div class="idCard" id="idCard">
+
+<h3>🪪 ANT ID CARD</h3>
+
+<p>Ant ID: ANT-007</p>
+<p>Employee ID: EMP-007</p>
+<p>Species: Worker Ant</p>
+<p>Status: UNDER CHECK</p>
+
+</div>
+
+
+<!-- sugar meter -->
+
+<div class="sugarMeter" id="sugarMeter">
+
+<div class="meterText">
+🍬 Sugar Level
+</div>
+
+<div class="meterBar">
+<div class="meterFill" id="meterFill"></div>
+</div>
+
+<div id="sugarNumber">
+0.0 g
+</div>
+
+</div>
+
+
+<!-- BOOM ONLY -->
+
+<div class="storyBoom" id="storyBoom">
+💥
+</div>
+
+
+<!-- RESORT -->
+
+<div class="storyResort" id="storyResort">
+
+<div class="resortHotel">
+
+<div class="resortRoof"></div>
+
+</div>
+
+<div class="resortPool"></div>
+
+<div class="storyPalm">
+🌴
+</div>
+
+<div class="storyTourist t1">🐜🧳</div>
+<div class="storyTourist t2">🐜📷</div>
+<div class="storyTourist t3">🐜🎒</div>
+
+</div>
+
+</div>
+
+
+<div class="storyText" id="storyText"></div>
+
+
+<button class="nextBtn" onclick="nextStory()">
+NEXT →
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     MAIN APP
+===================================================== -->
+
+<section id="app">
+
+<header>
+
+<div>
+
+<div class="logo">
+🐜 ANT-O-METER
+</div>
+
+<div class="subtitle">
+Ant Immigration Security & Resort System
+</div>
+
+</div>
+
+<button class="modeBtn" onclick="toggleMode()">
+🌙 MODE
+</button>
+
+</header>
+
+
+<!-- dashboard -->
+
+<div class="dashboard">
+
+<div class="card">
+<h3>TOTAL ANTS</h3>
+<p id="total">200</p>
+</div>
+
+<div class="card">
+<h3>CHECKED</h3>
+<p id="checked">0</p>
+</div>
+
+<div class="card">
+<h3>SCANNING</h3>
+<p id="scanning">0</p>
+</div>
+
+<div class="card">
+<h3>VERIFIED</h3>
+<p id="verified">0</p>
+</div>
+
+<div class="card">
+<h3>SUSPICIOUS</h3>
+<p id="suspicious">0</p>
+</div>
+
+<div class="card">
+<h3>REACHED RESORT</h3>
+<p id="reached">0</p>
+</div>
+
+</div>
+
+
+<!-- controls -->
+
+<div class="controls">
+
+<button class="controlBtn start"
+onclick="startSimulation()">
+▶ START
+</button>
+
+<button class="controlBtn stop"
+onclick="stopSimulation()">
+⏸ STOP
+</button>
+
+<button class="controlBtn restart"
+onclick="restartSimulation()">
+↻ RESTART
+</button>
+
+<div class="speedBox">
+
+Speed:
+
+<input
+type="range"
+id="speed"
+min="0.2"
+max="1.2"
+step="0.1"
+value="0.4">
+
+</div>
+
+</div>
+
+
+<!-- simulation -->
+
+<div class="simulation" id="simulation">
+
+<div class="antHill hillA"></div>
+<div class="antHill hillB"></div>
+<div class="antHill hillC"></div>
+
+
+<div class="detectionLine"></div>
+
+<div class="lineLabel">
+🚨 DETECTION LINE
+</div>
+
+<div class="sugarRule">
+🍬 ≤ 2.0g = VERIFIED<br>
+🍬 &gt; 2.0g = SUSPICIOUS
+</div>
+
+
+<!-- security ants -->
+
+<div class="securityGuard guard1">🐜🛡️</div>
+<div class="securityGuard guard2">🐜🛡️</div>
+<div class="securityGuard guard3">🐜🛡️</div>
+
+
+<!-- data -->
+
+<div class="dataPanel" id="dataPanel">
+
+<h3>🐜 ANT SCAN</h3>
+
+<div>
+Ant ID:
+<b id="antId">---</b>
+</div>
+
+<div>
+Employee ID:
+<b id="employeeId">---</b>
+</div>
+
+<div>
+Sugar:
+<b id="sugarValue">---</b>
+</div>
+
+<div>
+Status:
+<b id="statusValue">---</b>
+</div>
+
+</div>
+
+
+<!-- BOOM -->
+
+<div class="boomEffect" id="boomEffect">
+💥
+</div>
+
+
+<!-- RESORT -->
+
+<div class="destination">
+
+<div class="resortSign">
+🏖️ ANT RESORT
+</div>
+
+<div class="resortBuilding">
+
+<div class="resortRoof"></div>
+
+</div>
+
+<div class="pool"></div>
+
+<div class="palm palm1">🌴</div>
+<div class="palm palm2">🌴</div>
+
+<div class="umbrella">⛱️</div>
+
+<div class="resortAnt ra1">🐜🧳</div>
+<div class="resortAnt ra2">🐜📷</div>
+<div class="resortAnt ra3">🐜🎒</div>
+
+</div>
+
+
+<!-- log -->
+
+<div class="sidePanel">
+
+<h3>📡 SECURITY LOG</h3>
+
+<div id="log"></div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- success -->
+
+<div class="success" id="success">
+
+<div class="successBox">
+
+<h1>🎉 MISSION COMPLETE!</h1>
+
+<p>All ants have been processed.</p>
+
+<p style="margin-top:10px">
+Verified ants safely reached the
+🏖️ ANT RESORT.
+</p>
+
+<button
+class="nextBtn"
+style="margin-top:20px"
+onclick="closeSuccess()">
+
+CONTINUE
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   STORY DATA
+===================================================== */
+
+const stories=[
+
+`A large group of immigrant ants is travelling toward a new territory.
+
+They are carrying their belongings and hoping to reach a beautiful destination.`,
+
+`But there is one problem...
+
+Every immigrant ant must cross the security detection line before entering the new territory.`,
+
+`The security system identifies every ant.
+
+The system records its Ant ID and Employee ID before allowing it to continue.`,
+
+`The system also checks the sugar carried by each ant.
+
+🍬 Sugar ≤ 2.0 grams → VERIFIED.
+
+🍬 Sugar > 2.0 grams → SUSPICIOUS.`,
+
+`A suspicious ant is stopped by the security system...
+
+The system responds with a dramatic warning!`,
+
+`Verified ants are allowed to continue their journey.
+
+They crawl toward the tourist destination.`,
+
+`Finally...
+
+🏖️ WELCOME TO ANT RESORT!
+
+Tourist ants can relax, swim, explore and enjoy their vacation!`
+
+];
+
+let storyIndex=0;
+
+document.getElementById("storyText").innerText=
+stories[0];
+
+/* =====================================================
+
+
+   STORY ANIMATION
+===================================================== */
+
+function resetStoryAnimation(){
+
+document.getElementById("storyScanner")
+.style.display="none";
+
+document.getElementById("idCard")
+.style.display="none";
+
+document.getElementById("sugarMeter")
+.style.display="none";
+
+document.getElementById("storyResort")
+.style.display="none";
+
+}
+
+
+function animateChapter(){
+
+resetStoryAnimation();
+
+const scanner=
+document.getElementById("storyScanner");
+
+const idCard=
+document.getElementById("idCard");
+
+const sugarMeter=
+document.getElementById("sugarMeter");
+
+const boom=
+document.getElementById("storyBoom");
+
+const resort=
+document.getElementById("storyResort");
+
+
+/* CHAPTER 1 */
+
+if(storyIndex===0){
+
+document.querySelectorAll(".storyAnt")
+.forEach(a=>{
+a.style.display="block";
+});
+
+}
+
+
+/* CHAPTER 2 */
+
+if(storyIndex===1){
+
+document.querySelectorAll(".storyAnt")
+.forEach(a=>{
+a.style.display="block";
+});
+
+}
+
+
+/* CHAPTER 3 */
+
+if(storyIndex===2){
+
+scanner.style.display="block";
+
+setTimeout(()=>{
+idCard.style.display="block";
+},700);
+
+}
+
+
+/* CHAPTER 4 */
+
+if(storyIndex===3){
+
+sugarMeter.style.display="block";
+
+const fill=
+document.getElementById("meterFill");
+
+const number=
+document.getElementById("sugarNumber");
+
+fill.style.width="0%";
+
+number.innerText="0.0 g";
+
+setTimeout(()=>{
+
+fill.style.width="80%";
+
+number.innerText="2.4 g";
+
+},400);
+
+}
+
+
+/* CHAPTER 5 */
+
+if(storyIndex===4){
+
+setTimeout(()=>{
+
+boom.classList.remove("active");
+
+void boom.offsetWidth;
+
+boom.classList.add("active");
+
+},300);
+
+}
+
+
+/* CHAPTER 6 */
+
+if(storyIndex===5){
+
+document.querySelectorAll(".storyAnt")
+.forEach(a=>{
+a.style.display="block";
+});
+
+}
+
+
+/* CHAPTER 7 */
+
+if(storyIndex===6){
+
+document.querySelectorAll(".storyAnt")
+.forEach(a=>{
+a.style.display="none";
+});
+
+document.querySelector(".securityWall")
+.style.display="none";
+
+document.querySelector(".securityAntStory")
+.style.display="none";
+
+resort.style.display="block";
+
+}
+
+}
+
+
+/* =====================================================
+   NEXT STORY
+===================================================== */
+
+function nextStory(){
+
+storyIndex++;
+
+if(storyIndex>=stories.length){
+
+document.getElementById("storyScreen")
+.style.display="none";
+
+document.getElementById("app")
+.style.display="flex";
+
+createEnvironment();
+
+createAnts();
+
+stopMusic();
+
+return;
+}
+
+document.getElementById("chapter").innerText=
+"CHAPTER "+(storyIndex+1)+" / 7";
+
+document.getElementById("storyText").innerText=
+stories[storyIndex];
+
+animateChapter();
+
+}
+
+
+/* =====================================================
+   MUSIC
+===================================================== */
+
+/*
+ Original procedural sneaky jazz-style music.
+ It does NOT reproduce the Pink Panther melody.
+*/
+
+let audioCtx=null;
+let musicTimer=null;
+let musicOn=true;
+
+function startMusic(){
+
+if(!musicOn)return;
+
+if(audioCtx)
+return;
+
+audioCtx=
+new (window.AudioContext||
+window.webkitAudioContext)();
+
+const notes=[
+196,233,261,220,
+196,175,220,261
+];
+
+let i=0;
+
+musicTimer=setInterval(()=>{
+
+if(!audioCtx)return;
+
+const osc=
+audioCtx.createOscillator();
+
+const gain=
+audioCtx.createGain();
+
+osc.type="triangle";
+
+osc.frequency.value=
+notes[i%notes.length];
+
+gain.gain.setValueAtTime(
+0.0001,
+audioCtx.currentTime
+);
+
+gain.gain.exponentialRampToValueAtTime(
+0.035,
+audioCtx.currentTime+.03
+);
+
+gain.gain.exponentialRampToValueAtTime(
+0.0001,
+audioCtx.currentTime+.28
+);
+
+osc.connect(gain);
+
+gain.connect(audioCtx.destination);
+
+osc.start();
+
+osc.stop(audioCtx.currentTime+.3);
+
+i++;
+
+},360);
+
+}
+
+
+function stopMusic(){
+
+if(musicTimer){
+
+clearInterval(musicTimer);
+
+musicTimer=null;
+
+}
+
+if(audioCtx){
+
+audioCtx.close();
+
+audioCtx=null;
+
+}
+
+}
+
+
+function toggleMusic(){
+
+musicOn=!musicOn;
+
+document.getElementById("musicButton").innerText=
+musicOn
+?"🎵 MUSIC ON"
+:"🔇 MUSIC OFF";
+
+if(musicOn)
+startMusic();
+else
+stopMusic();
+
+}
+
+
+/* Start music after first user interaction */
+
+document.addEventListener(
+"click",
+function(){
+
+if(
+musicOn &&
+document.getElementById("storyScreen")
+.style.display!=="none"
+){
+
+startMusic();
+
+}
+
+},
+{once:true}
+);
+
+
+/* =====================================================
+   NATURAL ENVIRONMENT
+===================================================== */
+
+function createEnvironment(){
+
+const sim=
+document.getElementById("simulation");
+
+for(let i=0;i<40;i++){
+
+const grass=
+document.createElement("div");
+
+grass.className="grass";
+
+grass.style.left=
+Math.random()*52+"%";
+
+grass.style.top=
+10+Math.random()*80+"%";
+
+sim.appendChild(grass);
+
+}
+
+
+for(let i=0;i<14;i++){
+
+const leaf=
+document.createElement("div");
+
+leaf.className="leaf";
+
+leaf.style.left=
+Math.random()*52+"%";
+
+leaf.style.top=
+Math.random()*80+"%";
+
+sim.appendChild(leaf);
+
+}
+
+
+for(let i=0;i<20;i++){
+
+const crumb=
+document.createElement("div");
+
+crumb.className="crumb";
+
+crumb.style.left=
+Math.random()*52+"%";
+
+crumb.style.top=
+20+Math.random()*70+"%";
+
+sim.appendChild(crumb);
+
+}
+
+
+for(let i=0;i<10;i++){
+
+const stone=
+document.createElement("div");
+
+stone.className="stone";
+
+stone.style.left=
+Math.random()*52+"%";
+
+stone.style.top=
+20+Math.random()*70+"%";
+
+sim.appendChild(stone);
+
+}
+
+
+for(let i=0;i<5;i++){
+
+const twig=
+document.createElement("div");
+
+twig.className="twig";
+
+twig.style.left=
+Math.random()*45+"%";
+
+twig.style.top=
+30+Math.random()*50+"%";
+
+sim.appendChild(twig);
+
+}
+
+}
+
+/* =====================================================
+   ANT SYSTEM
+===================================================== */
+
+const TOTAL=200;
+
+let ants=[];
+
+let running=false;
+
+let scanning=0;
+let verified=0;
+let suspicious=0;
+let reached=0;
+
+let lastTime=0;
+
+
+function createAnt(id){
+
+const ant=
+document.createElement("div");
+
+ant.className="ant crawling";
+
+ant.innerHTML=`
+
+<div class="antAbdomen"></div>
+
+<div class="antBody"></div>
+
+<div class="antHead">
+<div class="eye"></div>
+</div>
+
+<div class="antenna a1"></div>
+<div class="antenna a2"></div>
+
+<div class="leg l1"></div>
+<div class="leg l2"></div>
+<div class="leg l3"></div>
+
+<div class="leg r1"></div>
+<div class="leg r2"></div>
+<div class="leg r3"></div>
+
+<div class="suitcase">🧳</div>
+
+`;
+
+ant.dataset.id=id;
+ant.dataset.progress=-100;
+ant.dataset.checked="false";
+ant.dataset.scanning="false";
+ant.dataset.removed="false";
+ant.dataset.reached="false";
+
+return ant;
+
+}
+
+
+let spawnedCount=0;
+let spawnTimer=null;
+
+function createAnts(){
+
+const sim=
+document.getElementById("simulation");
+
+ants=[];
+spawnedCount=0;
+
+if(spawnTimer){
+clearInterval(spawnTimer);
+spawnTimer=null;
+}
+
+updateDashboard();
+
+}
+
+
+function spawnNextAnt(){
+
+if(spawnedCount>=TOTAL) return;
+if(!running) return;
+
+const sim=
+document.getElementById("simulation");
+
+const ant=createAnt(spawnedCount+1);
+
+/* each ant starts off-screen on the left */
+ant.style.left="-80px";
+
+/* random vertical position so they don't form a line */
+const randomY=120+Math.floor(Math.random()*420);
+ant.style.top=randomY+"px";
+
+sim.appendChild(ant);
+ants.push(ant);
+
+spawnedCount++;
+
+updateDashboard();
+
+}
+
+
+/* =====================================================
+   START STOP RESTART
+===================================================== */
+
+function startSimulation(){
+
+if(running)return;
+
+running=true;
+
+lastTime=0;
+
+/* spawn ants one by one on a timer */
+if(spawnTimer){
+clearInterval(spawnTimer);
+}
+
+spawnNextAnt();
+
+spawnTimer=setInterval(()=>{
+
+if(!running){
+clearInterval(spawnTimer);
+spawnTimer=null;
+return;
+}
+
+spawnNextAnt();
+
+if(spawnedCount>=TOTAL){
+clearInterval(spawnTimer);
+spawnTimer=null;
+}
+
+},800);
+
+requestAnimationFrame(loop);
+
+}
+
+
+function stopSimulation(){
+
+running=false;
+
+}
+
+
+function restartSimulation(){
+
+running=false;
+
+if(spawnTimer){
+clearInterval(spawnTimer);
+spawnTimer=null;
+}
+
+ants.forEach(a=>a.remove());
+
+ants=[];
+
+scanning=0;
+verified=0;
+suspicious=0;
+reached=0;
+
+document.getElementById("log").innerHTML="";
+
+document.getElementById("dataPanel")
+.style.display="none";
+
+document.getElementById("success")
+.style.display="none";
+
+createAnts();
+
+}
+
+
+/* =====================================================
+   LOOP
+===================================================== */
+
+function loop(time){
+
+if(!running)return;
+
+if(!lastTime)
+lastTime=time;
+
+const delta=time-lastTime;
+
+lastTime=time;
+
+const speed=
+parseFloat(
+document.getElementById("speed").value
+);
+
+ants.forEach(ant=>{
+
+if(
+ant.dataset.checked==="true"||
+ant.dataset.scanning==="true"||
+ant.dataset.removed==="true"||
+ant.dataset.reached==="true"
+)
+return;
+
+let x=
+parseFloat(ant.dataset.progress);
+
+x+=speed*delta/16;
+
+ant.dataset.progress=x;
+
+ant.style.left=x+"px";
+
+const line=
+document.querySelector(".detectionLine");
+
+if(x+45>=line.offsetLeft){
+
+scanAnt(ant);
+
+}
+
+});
+
+checkMissionComplete();
+
+requestAnimationFrame(loop);
+
+}
+
+/* =====================================================
+   SCANNING
+===================================================== */
+
+function scanAnt(ant){
+
+if(
+ant.dataset.checked==="true"||
+ant.dataset.scanning==="true"
+)
+return;
+
+ant.dataset.scanning="true";
+
+scanning++;
+
+const id=ant.dataset.id;
+
+const employee=
+"EMP-"+String(id).padStart(3,"0");
+
+const sugar=
+(Math.random()*4).toFixed(1);
+
+ant.dataset.sugar=sugar;
+
+document.getElementById("antId").innerText=
+"ANT-"+String(id).padStart(3,"0");
+
+document.getElementById("employeeId").innerText=
+employee;
+
+document.getElementById("sugarValue").innerText=
+sugar+" g";
+
+document.getElementById("statusValue").innerText=
+"SCANNING...";
+
+document.getElementById("dataPanel")
+.style.display="block";
+
+addLog(
+"🔍 ANT-"+String(id).padStart(3,"0")+
+" entered scanner."
+);
+
+updateDashboard();
+
+
+setTimeout(()=>{
+
+if(ant.dataset.removed==="true")
+return;
+
+ant.dataset.scanning="false";
+
+scanning--;
+
+ant.dataset.checked="true";
+
+if(parseFloat(sugar)<=2.0){
+
+classifyVerified(ant);
+
+}else{
+
+classifySuspicious(ant);
+
+}
+
+updateDashboard();
+
+},1800);
+
+}
+
+/* =====================================================
+   VERIFIED
+===================================================== */
+
+function classifyVerified(ant){
+
+if(ant.dataset.status)
+return;
+
+ant.dataset.status="verified";
+
+verified++;
+
+document.getElementById("statusValue").innerText=
+"✅ VERIFIED";
+
+addLog(
+"✅ ANT-"+String(ant.dataset.id).padStart(3,"0")+
+" VERIFIED."
+);
+
+setTimeout(()=>{
+
+reachDestination(ant);
+
+},400);
+
+}
+
+
+/* =====================================================
+   SUSPICIOUS
+===================================================== */
+
+function classifySuspicious(ant){
+
+if(ant.dataset.status)
+return;
+
+ant.dataset.status="suspicious";
+
+suspicious++;
+
+document.getElementById("statusValue").innerText=
+"⚠️ SUSPICIOUS";
+
+addLog(
+"⚠️ ANT-"+String(ant.dataset.id).padStart(3,"0")+
+" SUSPICIOUS."
+);
+
+setTimeout(()=>{
+
+showBoom(ant);
+
+},500);
+
+}
+
+
+/* =====================================================
+   BOOM
+===================================================== */
+
+function showBoom(ant){
+
+if(ant.dataset.removed==="true")
+return;
+
+const sim=
+document.getElementById("simulation");
+
+const boom=
+document.getElementById("boomEffect");
+
+const x=
+parseFloat(ant.style.left);
+
+const y=
+parseFloat(ant.style.top);
+
+boom.style.left=
+(x+5)+"px";
+
+boom.style.top=
+(y-25)+"px";
+
+boom.classList.remove("active");
+
+void boom.offsetWidth;
+
+boom.classList.add("active");
+
+/* extra boom emojis scattered around */
+const boomEmojis=["💥","🔥","💀","☠️","🚫"];
+for(let b=0;b<4;b++){
+const extra=document.createElement("div");
+extra.innerText=boomEmojis[b];
+extra.style.position="absolute";
+extra.style.left=(x-20+Math.random()*80)+"px";
+extra.style.top=(y-30+Math.random()*60)+"px";
+extra.style.fontSize=(30+Math.random()*25)+"px";
+extra.style.zIndex="200";
+extra.style.pointerEvents="none";
+extra.style.opacity="1";
+extra.style.transition="all 0.6s ease-out";
+sim.appendChild(extra);
+setTimeout(()=>{
+extra.style.opacity="0";
+extra.style.transform="scale(2) translateY(-40px)";
+},50);
+setTimeout(()=>extra.remove(),700);
+}
+
+/* red flash overlay */
+const flash=document.createElement("div");
+flash.style.position="absolute";
+flash.style.inset="0";
+flash.style.background="rgba(255,0,0,0.25)";
+flash.style.zIndex="150";
+flash.style.pointerEvents="none";
+flash.style.transition="opacity 0.3s";
+sim.appendChild(flash);
+setTimeout(()=>{
+flash.style.opacity="0";
+},100);
+setTimeout(()=>flash.remove(),400);
+
+sim.classList.add("screenShake");
+
+setTimeout(()=>{
+
+sim.classList.remove("screenShake");
+
+},300);
+
+addLog("💥🔥 INVADER ANT-"+String(ant.dataset.id).padStart(3,"0")+" SHOT & REMOVED!");
+
+setTimeout(()=>{
+
+removeSuspicious(ant);
+
+},500);
+
+}
+
+
+/* =====================================================
+   REMOVE
+===================================================== */
+
+function removeSuspicious(ant){
+
+if(ant.dataset.removed==="true")
+return;
+
+ant.dataset.removed="true";
+
+ant.style.transition=
+"opacity .5s,transform .5s";
+
+ant.style.opacity="0";
+
+ant.style.transform="scale(.2)";
+
+setTimeout(()=>{
+
+ant.remove();
+
+},600);
+
+}
+
+
+/* =====================================================
+   RESORT
+===================================================== */
+
+function reachDestination(ant){
+
+if(
+ant.dataset.reached==="true"||
+ant.dataset.removed==="true"
+)
+return;
+
+ant.dataset.reached="true";
+
+reached++;
+
+/* smooth slide to resort */
+ant.style.transition="left 1.2s ease-in-out, top 0.8s ease-in-out, transform 0.5s";
+
+ant.style.left="72%";
+
+ant.style.top=
+(120+Math.random()*380)+"px";
+
+ant.style.transform="scale(.7)";
+
+/* show a little check on arrival */
+const check=document.createElement("div");
+check.innerText="✅";
+check.style.position="absolute";
+check.style.left=ant.style.left;
+check.style.top=ant.style.top;
+check.style.fontSize="20px";
+check.style.zIndex="200";
+check.style.pointerEvents="none";
+check.style.transition="all 0.8s ease-out";
+document.getElementById("simulation").appendChild(check);
+setTimeout(()=>{
+check.style.opacity="0";
+check.style.transform="translateY(-30px) scale(1.5)";
+},100);
+setTimeout(()=>check.remove(),900);
+
+addLog(
+"🏖️ ANT-"+String(ant.dataset.id).padStart(3,"0")+
+" safely reached ANT RESORT! 🌴"
+);
+
+updateDashboard();
+
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+function updateDashboard(){
+
+const checked=
+Math.min(
+TOTAL,
+scanning+verified+suspicious
+);
+
+document.getElementById("total").innerText=
+TOTAL;
+
+document.getElementById("checked").innerText=
+checked;
+
+document.getElementById("scanning").innerText=
+scanning;
+
+document.getElementById("verified").innerText=
+verified;
+
+document.getElementById("suspicious").innerText=
+suspicious;
+
+document.getElementById("reached").innerText=
+reached;
+
+}
+
+
+/* =====================================================
+   LOG
+===================================================== */
+
+function addLog(text){
+
+const log=
+document.getElementById("log");
+
+const item=
+document.createElement("div");
+
+item.className="log";
+
+item.innerText=
+new Date().toLocaleTimeString()+
+" — "+text;
+
+log.prepend(item);
+
+}
+
+
+/* =====================================================
+   COMPLETE
+===================================================== */
+
+function checkMissionComplete(){
+
+const processed=
+verified+suspicious;
+
+if(
+processed===TOTAL&&
+scanning===0&&
+reached===verified
+){
+
+running=false;
+
+setTimeout(()=>{
+
+document.getElementById("success")
+.style.display="flex";
+
+confetti();
+
+},700);
+
+}
+
+}
+
+
+/* =====================================================
+   SUCCESS
+===================================================== */
+
+function closeSuccess(){
+
+document.getElementById("success")
+.style.display="none";
+
+}
+
+
+/* =====================================================
+   CONFETTI
+===================================================== */
+
+function confetti(){
+
+for(let i=0;i<40;i++){
+
+const c=
+document.createElement("div");
+
+c.innerText=
+["🎉","⭐","🐜","🍬"][Math.floor(Math.random()*4)];
+
+c.style.position="fixed";
+
+c.style.left=
+Math.random()*100+"%";
+
+c.style.top="-30px";
+
+c.style.fontSize=
+(15+Math.random()*20)+"px";
+
+c.style.zIndex="1000";
+
+c.style.transition=
+"top 2s linear,transform 2s";
+
+document.body.appendChild(c);
+
+setTimeout(()=>{
+
+c.style.top="100%";
+
+c.style.transform=
+"rotate(720deg)";
+
+},50);
+
+setTimeout(()=>c.remove(),2200);
+
+}
+
+}
+
+
+/* =====================================================
+   DAY NIGHT
+===================================================== */
+
+let dark=true;
+
+function toggleMode(){
+
+dark=!dark;
+
+document.body.style.background=
+dark?"#101827":"#dbeafe";
+
+}
+
+</script>
+
+</body>
+</html>
